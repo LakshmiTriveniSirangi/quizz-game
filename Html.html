@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz</title>
+<style>
+    body {
+        background-color: #f0f0f0; /* Background color */
+        text-align: center;
+    }
+    #quiz-container {
+        margin: 0 auto;
+        width: 50%;
+        background-color: #fff; /* Quiz container background color */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #quiz-form {
+        display: none; /* Hide the form by default */
+    }
+    #question-list {
+        text-align: left; /* Left-align the options */
+    }
+    #quiz-intro {
+        margin: 100px auto;
+        width: 70%;
+        background-color: #fff; /* Quiz intro background color */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #start-quiz-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50; /* Green */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    #start-quiz-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<div id="quiz-container">
+    <h1>Welcome to the Quiz</h1>
+    <p>Get ready to test your knowledge!</p>
+    <p>This quiz is conducted by Triveni. Choose your subject and get started!</p>
+    <label for="subject">Select Subject:</label>
+    <select id="subject">
+        <option value="mathematics">Mathematics</option>
+        <option value="html">HTML</option>
+    </select><br><br>
+    <button id="start-quiz-btn">Start Quiz</button>
+    <form id="quiz-form">
+        <ol id="question-list">
+            <!-- Questions will be inserted here dynamically -->
+        </ol>
+        <input type="submit" value="Submit">
+    </form>
+    <div id="score-container" style="display: none;"></div>
+</div>
+
+<script>
+    const questionsAndAnswers = {
+        mathematics: [
+            { question: 'What is 2 + 2?', options: ['3', '4', '5', '6'], answer: '4' },
+            { question: 'What is the square root of 16?', options: ['2', '4', '6', '8'], answer: '4' },
+            { question: 'What is 10 * 5?', options: ['40', '50', '60', '70'], answer: '50' },
+            { question: 'What is the value of π (pi) rounded to two decimal places?', options: ['3.12', '3.14', '3.16', '3.18'], answer: '3.14' },
+            { question: 'What is 12 / 3?', options: ['2', '3', '4', '6'], answer: '4' }
+        ],
+        html: [
+            { question: 'What is the full form of HTML', options: ['Hyper Text Markup Language', 'High Tech Markup Language', 'Hyperlinks and Text Markup Language', 'Home Tool Markup Language'], answer: 'Hyper Text Markup Language' },
+            { question: 'What does the HTML attribute "href" define?', options: ['Hypertext Reference', 'Home Reference', 'Hypertext Relevance', 'Header Reference'], answer: 'Hypertext Reference' },
+            { question: 'What does the HTML attribute "src" define?', options: ['Source','Script','Styling','Subtitle'], answer: 'Source' },
+            { question: 'Which element is used to define a hyperlink in HTML?', options: ['Anchor','Link','Hyper','Reference'], answer: 'Anchor' },
+            { question: 'Which attribute is used to specify a URL in HTML?', options: ['Link','Source','HREF','URL'], answer: 'HREF' }
+        ]
+    };
+
+    document.getElementById('start-quiz-btn').addEventListener('click', function() {
+        const selectedSubject = document.getElementById('subject').value;
+        const selectedQuestions = questionsAndAnswers[selectedSubject];
+        const questionList = document.getElementById('question-list');
+        questionList.innerHTML = '';
+        selectedQuestions.forEach((q, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <h3>${q.question}</h3>
+                <div>
+                    ${q.options.map(option => `<input type="radio" name="answer${index + 1}" value="${option}">${option}<br>`).join('')}
+                </div>
+            `;
+            questionList.appendChild(li);
+        });
+        document.getElementById('quiz-form').style.display = 'block';
+    });
+
+    document.getElementById('quiz-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        const selectedSubject = document.getElementById('subject').value;
+        const selectedQuestions = questionsAndAnswers[selectedSubject];
+        let score = 0;
+        selectedQuestions.forEach((q, index) => {
+            const userAnswer = document.querySelector(`input[name="answer${index + 1}"]:checked`);
+            if (userAnswer && userAnswer.value === q.answer) {
+                score++;
+            }
+        });
+        const totalQuestions = selectedQuestions.length;
+        const scorePercentage = (score / totalQuestions) * 100;
+        const scoreContainer = document.getElementById('score-container');
+        scoreContainer.innerHTML = `<h2>Your Score: ${score} out of ${totalQuestions} (${scorePercentage.toFixed(2)}%)</h2>`;
+        scoreContainer.style.display = 'block';
+        this.style.display = 'none';
+    });
+</script>
+</body>
